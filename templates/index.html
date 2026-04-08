@@ -1,4 +1,60 @@
 <!DOCTYPE html>
-<html><head><title>Monitor-AI</title></head>
-<body><p>coming soon</p></body>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor-AI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Monitor-AI</h1>
+        <span id="status" class="status-dot"></span>
+    </header>
+
+    <main>
+        <!-- CPU Card -->
+        <section class="card" id="card-cpu">
+            <h2>CPU</h2>
+            <div class="stat-value" id="cpu-total">--%</div>
+            <div class="cores-grid" id="cpu-cores"></div>
+            <canvas id="chart-cpu" height="80"></canvas>
+        </section>
+
+        <!-- RAM Card -->
+        <section class="card" id="card-ram">
+            <h2>RAM</h2>
+            <div class="stat-value" id="ram-percent">--%</div>
+            <div class="stat-detail" id="ram-detail">-- MB / -- MB</div>
+            <canvas id="chart-ram" height="80"></canvas>
+        </section>
+
+        <!-- Disk Card -->
+        <section class="card" id="card-disk">
+            <h2>Диск C:</h2>
+            <div class="stat-value" id="disk-percent">--%</div>
+            <div class="stat-detail" id="disk-detail">-- GB / -- GB</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="disk-bar"></div>
+            </div>
+        </section>
+
+        <!-- Network Card -->
+        <section class="card" id="card-network">
+            <h2>Мережа</h2>
+            <div class="net-row">
+                <span class="net-label">&#8595; Вхід</span>
+                <span class="stat-value" id="net-down">-- Mbps</span>
+            </div>
+            <div class="net-row">
+                <span class="net-label">&#8593; Вихід</span>
+                <span class="stat-value" id="net-up">-- Mbps</span>
+            </div>
+            <canvas id="chart-net" height="80"></canvas>
+        </section>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+</body>
 </html>
