@@ -1,0 +1,160 @@
+/* Monitor-AI — Dark theme
+   Colors: bg #0a0a0a, cards #1a1a1a, accent #00ff88
+   Font: system monospace for numbers */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0a0a0a;
+    --card: #1a1a1a;
+    --accent: #00ff88;
+    --text: #e0e0e0;
+    --text-dim: #666;
+    --warning: #ff6b6b;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+header h1 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    transition: background 0.3s;
+}
+
+.status-dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+/* Dashboard grid — 2 columns on wide screens */
+main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #2a2a2a;
+}
+
+.card h2 {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+/* Big number display */
+.stat-value {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-detail {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+}
+
+/* Warning state — turns red when > 80% */
+.card.warning .stat-value {
+    color: var(--warning);
+}
+
+/* CPU per-core grid */
+.cores-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.core-badge {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    background: #2a2a2a;
+    border-radius: 4px;
+    color: var(--text-dim);
+}
+
+.core-badge.hot {
+    color: var(--warning);
+}
+
+/* Disk progress bar */
+.progress-bar {
+    height: 6px;
+    background: #2a2a2a;
+    border-radius: 3px;
+    margin-top: 0.75rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.progress-fill.warning {
+    background: var(--warning);
+}
+
+/* Network rows */
+.net-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+
+.net-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.net-row .stat-value {
+    font-size: 1.25rem;
+}
+
+/* Chart.js canvas spacing */
+canvas {
+    margin-top: 0.75rem;
+}
