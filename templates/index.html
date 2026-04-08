@@ -3,57 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor-AI</title>
+    <title>Monitor-AI — Моніторинг системи</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Monitor-AI</h1>
-        <span id="status" class="status-dot"></span>
+    <!-- Header with branding and status -->
+    <header class="header">
+        <div class="header-brand">
+            <div class="logo-icon">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <!-- CPU/Chip icon -->
+                    <rect x="4" y="4" width="24" height="24" rx="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <line x1="10" y1="4" x2="10" y2="28" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+                    <line x1="16" y1="4" x2="16" y2="28" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+                    <line x1="22" y1="4" x2="22" y2="28" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+                    <line x1="4" y1="10" x2="28" y2="10" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+                    <line x1="4" y1="16" x2="28" y2="16" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+                    <line x1="4" y1="22" x2="28" y2="22" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+                </svg>
+            </div>
+            <span class="logo-text">MONITOR-AI</span>
+        </div>
+
+        <div class="header-status">
+            <span class="status-dot" id="status"></span>
+            <span class="status-text" id="status-text">Підключення...</span>
+        </div>
+
+        <div class="header-time" id="current-time">--:--:--</div>
     </header>
 
-    <main>
+    <!-- Main dashboard grid -->
+    <main class="dashboard">
+
         <!-- CPU Card -->
         <section class="card" id="card-cpu">
-            <h2>CPU</h2>
-            <div class="stat-value" id="cpu-total">--%</div>
-            <div class="cores-grid" id="cpu-cores"></div>
-            <canvas id="chart-cpu" height="80"></canvas>
+            <div class="card-header">
+                <div class="card-icon cpu-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <!-- CPU icon -->
+                        <rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <rect x="6" y="6" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1" fill="none" opacity="0.5"/>
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="card-title-group">
+                    <p class="card-label">CPU</p>
+                    <h2 class="card-title">Навантаження системи</h2>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="metric-value" id="cpu-total">--%</div>
+                <p class="metric-caption">загальне використання процесора</p>
+            </div>
+
+            <div class="cores-section">
+                <p class="section-label">Ядра процесора</p>
+                <div class="cores-grid" id="cpu-cores"></div>
+            </div>
+
+            <canvas id="chart-cpu" height="60" class="card-chart"></canvas>
         </section>
 
         <!-- RAM Card -->
         <section class="card" id="card-ram">
-            <h2>RAM</h2>
-            <div class="stat-value" id="ram-percent">--%</div>
-            <div class="stat-detail" id="ram-detail">-- MB / -- MB</div>
-            <canvas id="chart-ram" height="80"></canvas>
+            <div class="card-header">
+                <div class="card-icon ram-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <!-- RAM icon -->
+                        <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <line x1="6" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                        <line x1="6" y1="13" x2="18" y2="13" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                        <circle cx="6" cy="19" r="1" fill="currentColor" opacity="0.5"/>
+                        <circle cx="12" cy="19" r="1" fill="currentColor" opacity="0.5"/>
+                        <circle cx="18" cy="19" r="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="card-title-group">
+                    <p class="card-label">ПАМ'ЯТЬ</p>
+                    <h2 class="card-title">Використання пам'яті</h2>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="metric-value" id="ram-percent">--%</div>
+                <p class="metric-caption" id="ram-detail">-- GB / -- GB</p>
+            </div>
+
+            <div class="progress-bar" title="Використання пам'яті">
+                <div class="progress-fill" id="ram-bar"></div>
+            </div>
+
+            <canvas id="chart-ram" height="60" class="card-chart"></canvas>
         </section>
 
         <!-- Disk Card -->
         <section class="card" id="card-disk">
-            <h2>Диск C:</h2>
-            <div class="stat-value" id="disk-percent">--%</div>
-            <div class="stat-detail" id="disk-detail">-- GB / -- GB</div>
-            <div class="progress-bar">
+            <div class="card-header">
+                <div class="card-icon disk-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <!-- Disk icon -->
+                        <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <path d="M6 10C6 8.9 6.9 8 8 8H16C17.1 8 18 8.9 18 10" stroke="currentColor" stroke-width="1" fill="none" opacity="0.5"/>
+                        <circle cx="8" cy="17" r="1" fill="currentColor" opacity="0.6"/>
+                        <circle cx="16" cy="17" r="1" fill="currentColor" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="card-title-group">
+                    <p class="card-label">ДИСК</p>
+                    <h2 class="card-title">Сховище</h2>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="metric-value" id="disk-percent">--%</div>
+                <p class="metric-caption" id="disk-detail">-- GB / -- GB</p>
+            </div>
+
+            <div class="progress-bar" title="Заповненість диска">
                 <div class="progress-fill" id="disk-bar"></div>
+            </div>
+
+            <div class="disk-warning" id="disk-warning" hidden>
+                <span class="warning-icon">⚠</span>
+                <span>Диск заповнений більше ніж на 80%</span>
             </div>
         </section>
 
         <!-- Network Card -->
         <section class="card" id="card-network">
-            <h2>Мережа</h2>
-            <div class="net-row">
-                <span class="net-label">&#8595; Вхід</span>
-                <span class="stat-value" id="net-down">-- Mbps</span>
+            <div class="card-header">
+                <div class="card-icon net-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <!-- Network icon -->
+                        <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.7"/>
+                        <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/>
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="none" opacity="0.2"/>
+                        <line x1="16" y1="8" x2="18" y2="6" stroke="currentColor" stroke-width="1.5"/>
+                        <line x1="8" y1="16" x2="6" y2="18" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <div class="card-title-group">
+                    <p class="card-label">МЕРЕЖА</p>
+                    <h2 class="card-title">Мережева активність</h2>
+                </div>
             </div>
-            <div class="net-row">
-                <span class="net-label">&#8593; Вихід</span>
-                <span class="stat-value" id="net-up">-- Mbps</span>
+
+            <div class="net-stats">
+                <div class="net-item">
+                    <div class="net-arrow down">↓</div>
+                    <div class="net-values">
+                        <div class="metric-value small" id="net-down">-- Mbps</div>
+                        <div class="metric-caption">завантаження</div>
+                    </div>
+                </div>
+                <div class="net-divider"></div>
+                <div class="net-item">
+                    <div class="net-arrow up">↑</div>
+                    <div class="net-values">
+                        <div class="metric-value small" id="net-up">-- Mbps</div>
+                        <div class="metric-caption">відвантаження</div>
+                    </div>
+                </div>
             </div>
-            <canvas id="chart-net" height="80"></canvas>
+
+            <canvas id="chart-net" height="60" class="card-chart"></canvas>
         </section>
     </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="footer-brand">Powered by Monitor-AI</span>
+        <span class="footer-uptime">Час роботи: <span id="uptime-counter">00:00:00</span></span>
+    </footer>
 
     <script src="/static/js/main.js"></script>
 </body>

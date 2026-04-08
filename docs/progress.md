@@ -10,12 +10,25 @@
 - requirements.txt — Flask, psutil, pytest
 - app.py — Flask сервер + збір даних через psutil
 - tests/test_app.py — 8 тестів (всі PASSED)
-- templates/index.html — HTML структура дашборду
-- static/css/style.css — темна тема (#0a0a0a / #00ff88)
-- static/js/main.js — живі графіки Chart.js, оновлення кожну секунду
+- templates/index.html — професійний SaaS дизайн
+  - Шапка з логотипом, статусом, поточним часом
+  - 4 картки з іконками, чіткими заголовками, великими метриками
+  - Футер з логотипом та лічильником часу
+- static/css/style.css — полний редизайн (Inter шрифт, глоу ефекти)
+  - Responsive дизайн (1 колонка на мобільному)
+  - CSS анімації (пульс, slideInUp)
+  - Hover ефекти на картках
+- static/js/main.js — нові JS функції
+  - Поточний час в шапці (оновлення щосекунди)
+  - Лічильник часу роботи в футері
+  - RAM в GB замість MB
+  - Core labels "Ядро 0", "Ядро 1" тощо
+  - RAM progress bar
+  - Disk warning при > 80%
+  - Статус текст "Активний" / "З'єднання втрачено"
 
 ## 🔄 Зараз робимо
-- Злиття feature/monitor-ai-core в main
+- (завершено)
 
 ## 📋 Далі по порядку
 - [ ] Тестування в браузері і порівняння з Windows Task Manager

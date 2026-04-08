@@ -7,6 +7,7 @@
 const HISTORY = 60;        // number of seconds to show on charts
 const INTERVAL = 1000;     // milliseconds between updates
 const WARN_THRESHOLD = 80; // percent — show warning color above this
+const UPTIME_START = Date.now(); // track uptime from page load
 
 // ── History buffers ─────────────────────────────────────────────
 const cpuHistory     = Array(HISTORY).fill(0);
@@ -103,7 +104,7 @@ function updateCpu(data) {
     const grid = document.getElementById("cpu-cores");
     grid.innerHTML = data.cpu_cores
         .map((c, i) =>
-            `<span class="core-badge${c > WARN_THRESHOLD ? " hot" : ""}">C${i}: ${c.toFixed(0)}%</span>`
+            `<span class="core-badge${c > WARN_THRESHOLD ? " hot" : ""}">Ядро ${i}: ${c.toFixed(0)}%</span>`
         )
         .join("");
 
@@ -112,18 +113,28 @@ function updateCpu(data) {
 }
 
 function updateRam(data) {
-    /** Update RAM percent, used/total text, and chart. */
+    /** Update RAM percent, used/total text in GB, progress bar, and chart. */
     const ram = data.ram;
+    const usedGb = (ram.used_mb / 1024).toFixed(1);
+    const totalGb = (ram.total_mb / 1024).toFixed(1);
+
     setText("ram-percent", ram.percent.toFixed(1) + "%");
-    setText("ram-detail", `${ram.used_mb} MB / ${ram.total_mb} MB`);
+    setText("ram-detail", `${usedGb} GB / ${totalGb} GB`);
     setWarning("card-ram", ram.percent > WARN_THRESHOLD);
+
+    // Update RAM progress bar
+    const ramBar = document.getElementById("ram-bar");
+    if (ramBar) {
+        ramBar.style.width = ram.percent + "%";
+        ramBar.classList.toggle("warning", ram.percent > WARN_THRESHOLD);
+    }
 
     pushHistory(ramHistory, ram.percent);
     ramChart.update();
 }
 
 function updateDisk(data) {
-    /** Update disk percent, used/total text, and progress bar. */
+    /** Update disk percent, used/total text, progress bar, and warning. */
     const disk = data.disk;
     setText("disk-percent", disk.percent.toFixed(1) + "%");
     setText("disk-detail", `${disk.used_gb} GB / ${disk.total_gb} GB`);
@@ -132,6 +143,12 @@ function updateDisk(data) {
     if (bar) {
         bar.style.width = disk.percent + "%";
         bar.classList.toggle("warning", disk.percent > WARN_THRESHOLD);
+    }
+
+    // Toggle disk warning visibility
+    const diskWarning = document.getElementById("disk-warning");
+    if (diskWarning) {
+        diskWarning.hidden = disk.percent <= WARN_THRESHOLD;
     }
 }
 
@@ -148,6 +165,37 @@ function updateNetwork(data) {
     const maxSpeed = Math.max(...netDownHistory, ...netUpHistory, 1);
     netChart.options.scales.y.max = Math.ceil(maxSpeed * 1.2);
     netChart.update();
+}
+
+// ── Time and uptime display ─────────────────────────────────────
+function updateCurrentTime() {
+    /** Update header with current time in HH:MM:SS format. */
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    setText("current-time", `${hh}:${mm}:${ss}`);
+}
+
+function updateUptime() {
+    /** Update footer uptime counter. */
+    const elapsed = Math.floor((Date.now() - UPTIME_START) / 1000);
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
+
+    const hh = String(hours).padStart(2, '0');
+    const mm = String(minutes).padStart(2, '0');
+    const ss = String(seconds).padStart(2, '0');
+    setText("uptime-counter", `${hh}:${mm}:${ss}`);
+}
+
+function updateStatusText(isActive) {
+    /** Update status text based on connection state. */
+    const statusEl = document.getElementById("status-text");
+    if (statusEl) {
+        statusEl.textContent = isActive ? "Активний" : "З'єднання втрачено";
+    }
 }
 
 // ── Main fetch loop ──────────────────────────────────────────────
@@ -168,12 +216,19 @@ async function fetchAndUpdate() {
         updateNetwork(data);
 
         dot.classList.add("active");
+        updateStatusText(true);
     } catch (err) {
         console.error("Failed to fetch stats:", err);
         dot.classList.remove("active");
+        updateStatusText(false);
     }
 }
 
 // Start immediately, then repeat every second
 fetchAndUpdate();
+updateCurrentTime();
+updateUptime();
+
 setInterval(fetchAndUpdate, INTERVAL);
+setInterval(updateCurrentTime, INTERVAL);
+setInterval(updateUptime, INTERVAL);
